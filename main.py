@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return jsonify({ 'status' : 'running'})
+    with open("index.html", "r") as file:
+        return file.read()
 
 @app.route("/check-ip")
 def check_ip():

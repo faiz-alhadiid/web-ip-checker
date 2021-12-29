@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Checker</title>
+</head>
+<body>
+    <h1>IP/Domain Checker</h1>
+    <h3>IP-Address, Domain or URL:</h3>
+    <span>
+        <input type="text" id="url" >
+        <button onclick="check()">Check</button>
+    </span>
+    <div id="result"></div>
+</body>
+<script>
+    document.getElementById("url").addEventListener("keyup", function(event){
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            check();
+        }
+    });
+    async function check(){
+        let value = document.getElementById("url").value;
+        let res = await fetch("/check-ip?url="+value);
+        let record = await res.json();
+        let table = `<table>
+                <tr>
+                    <th>Type</th>
+                    <th>Value</th>
+                </tr>
+                ${record.map(row => `
+                    <tr>
+                        <td>${row.type}</td>
+                        <td>${row.value}</td>
+                    </tr>
+                    `).join("")}
+            </table>`;
+        document.getElementById("result").innerHTML = table;
+    }
+</script>
+</html>
