@@ -16,7 +16,7 @@ func main() {
 	http.HandleFunc("/check-ip", checkIP)
 
 	log.Println("Server running at port " + port)
-	if err := http.ListenAndServe("localhost:"+port, nil); err != nil {
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Println("Server stopped")
 	}
 
