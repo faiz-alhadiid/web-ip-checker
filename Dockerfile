@@ -1,6 +1,15 @@
-FROM python:3.8-slim
-RUN apt-get update && apt-get install -y dnsutils
+FROM golang:1.16 AS builder
+
 COPY . /app
 WORKDIR /app
-RUN pip install --no-cache-dir -r requirements.txt
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 1 --timeout 0 main:app
+RUN CGO_ENABLED=0 GOOS=linux go build -o app .
+
+FROM alpine:latest
+RUN apk --no-cache add bind-tools
+RUN mkdir -p /app/static
+COPY --from=builder /app/app /app
+COPY --from=builder /app/static /app/static
+WORKDIR /app
+RUN chmod +x app
+RUN ls -l
+CMD ["/app/app"]
